@@ -1,0 +1,11 @@
+# A sizeable chunk of time [during compilation] is spent in the linking
+# phase - assembling the actual binary given the outputs of the
+# earlier compilation stages.
+# The default linker does a good job, but there are faster alternatives
+# depending on the operating system you are using
+
+# On Linux:
+# - Ubuntu, `sudo apt-get install lld clang`
+
+[target.x86_64-ubuntu-linux-gnu]
+rustflags = ["-C", "linker=clang", "-C", "link-arg=-fuse-ld=lld"]
