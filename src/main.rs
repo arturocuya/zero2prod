@@ -1,3 +1,6 @@
+mod models;
+mod schema;
+
 use actix_web::{
     web,
     get,
@@ -7,6 +10,8 @@ use actix_web::{
     Responder,
     HttpResponse
 };
+
+use crate::models::*;
 
 #[derive(serde::Deserialize)]
 struct FormData {
@@ -22,7 +27,9 @@ async fn health_check() -> impl Responder {
 // Continue in 3.8.4 Database Setup
 #[post("/subscriptions")]
 async fn subscribe(form: web::Form<FormData>) -> impl Responder {
-    return format!("Hello {}!", form.username);
+    let conn = &mut establish_connnection().await;
+    let new_sub = create_subscription(conn, &form.email, &form.username).await;
+    return HttpResponse::Ok().json(new_sub);
 }
 
 #[actix_web::main]
